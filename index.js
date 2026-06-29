@@ -23,7 +23,9 @@ require("./models/connection")
 app.use("/api/admin", adminRoutes);
 app.use("/api/devotees", devoteeRoutes);
 
-
+app.get("/",(res,req)=>{
+  res.send("hello")
+})
 
 app.listen(8000, () => {
   console.log("Server running on port 8000");
