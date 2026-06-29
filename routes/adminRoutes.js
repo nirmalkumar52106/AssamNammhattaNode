@@ -22,7 +22,7 @@ router.post("/register", async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const admin = await Admin.create({
+    const admin = await AdminModel.create({
       name,
       email,
       password: hashedPassword,
