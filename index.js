@@ -23,7 +23,7 @@ require("./models/connection")
 app.use("/api/admin", adminRoutes);
 app.use("/api/devotees", devoteeRoutes);
 
-app.get("/",(res,req)=>{
+app.get("/",(req,res)=>{
   res.send("hello")
 })
 
