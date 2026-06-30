@@ -61,7 +61,7 @@ router.post("/", async (req, res) => {
 */
 router.get("/", verifyAdmin, async (req, res) => {
   try {
-    const donations = await Donation.find()
+    const donations = await Donation.find({})
       .populate("verifiedBy", "name email")
       .sort({ createdAt: -1 });
 

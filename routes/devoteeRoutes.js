@@ -81,7 +81,7 @@ router.post("/register", async (req, res) => {
 // GET - All Registrations Protected
 router.get("/", verifyAdmin, async (req, res) => {
   try {
-    const registrations = await RegistrationModel.find().sort({
+    const registrations = await RegistrationModel.find({}).sort({
       createdAt: -1,
     });
 
