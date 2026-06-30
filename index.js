@@ -4,9 +4,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser")
 const adminRoutes = require("./routes/adminRoutes");
 const devoteeRoutes = require("./routes/devoteeRoutes");
-
-
-
+const donationRoutes = require("./routes/donationRoutes");
 
 
 const app = express();
@@ -22,6 +20,7 @@ require("./models/connection")
 
 app.use("/api/admin", adminRoutes);
 app.use("/api/devotees", devoteeRoutes);
+app.use("/api/donation", donationRoutes);
 
 app.get("/",(req,res)=>{
   res.send("hello")
