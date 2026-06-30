@@ -8,19 +8,22 @@ const router = express.Router();
 
 router.post("/", async (req, res) => {
   try {
-    const { name, phone, email, amount, message } = req.body;
+    console.log("DONATION BODY:", req.body);
+
+    const {
+      name,
+      phone,
+      email,
+      amount,
+      message,
+      paymentMode,
+      transactionId,
+    } = req.body;
 
     if (!name || !phone || !amount) {
       return res.status(400).json({
         success: false,
         message: "Name, phone and amount are required",
-      });
-    }
-
-    if (Number(amount) <= 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Donation amount must be greater than 0",
       });
     }
 
@@ -30,17 +33,21 @@ router.post("/", async (req, res) => {
       email,
       amount: Number(amount),
       message,
+      paymentMode: paymentMode || "UPI",
+      transactionId: transactionId || `UPI${Date.now()}`,
       paymentStatus: "pending",
       paymentVerified: false,
     });
 
-    return res.status(201).json({
+    res.status(201).json({
       success: true,
       message: "Donation details submitted successfully",
       data: donation,
     });
   } catch (error) {
-    return res.status(500).json({
+    console.log("DONATION ERROR:", error.message);
+
+    res.status(500).json({
       success: false,
       message: "Server error",
       error: error.message,
