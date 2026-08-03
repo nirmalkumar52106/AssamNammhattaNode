@@ -39,6 +39,10 @@ router.post("/create-order", async (req, res) => {
   }
 });
 
+
+//assamnaam01@gmail.com
+//Admin@123
+
 router.post("/register", async (req, res) => {
   try {
     const {

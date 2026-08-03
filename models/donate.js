@@ -46,13 +46,39 @@ const donationSchema = new mongoose.Schema(
     paymentMode: {
       type: String,
       enum: ["UPI", "Card", "Net Banking", "Wallet", "Cash", ""],
-      default: "Upi",
+      default: "UPI",
+    },
+
+    // Razorpay Details
+    razorpayOrderId: {
+      type: String,
+      default: "",
+    },
+
+    razorpayPaymentId: {
+      type: String,
+      default: "",
+    },
+
+    razorpaySignature: {
+      type: String,
+      default: "",
     },
 
     transactionId: {
       type: String,
       trim: true,
       default: "",
+    },
+
+    receiptId: {
+      type: String,
+      default: "",
+    },
+
+    currency: {
+      type: String,
+      default: "INR",
     },
 
     verifiedBy: {
@@ -66,8 +92,11 @@ const donationSchema = new mongoose.Schema(
       default: null,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
 const Donation = mongoose.model("Donation", donationSchema);
-module.exports = Donation
+
+module.exports = Donation;

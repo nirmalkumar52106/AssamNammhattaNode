@@ -6,19 +6,113 @@ const verifyAdmin = require("../middleware/auth");
 const router = express.Router();
 
 
+const Razorpay = require("razorpay");
+const crypto = require("crypto");
+const razorpay = new Razorpay({
+  key_id: "rzp_live_SjGJfgz1TW0u5h",
+  key_secret: "M1zECoibwUS7PgLYzhr30oIp",
+});
+
+router.post("/create-order", async (req, res) => {
+  try {
+    const { amount } = req.body;
+
+    if (!amount || Number(amount) < 1) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter a valid amount",
+      });
+    }
+
+    const options = {
+      amount: Number(amount) * 100,
+      currency: "INR",
+      receipt: "DON_" + Date.now(),
+    };
+
+    const order = await razorpay.orders.create(options);
+
+    return res.status(200).json({
+      success: true,
+      key: "rzp_live_SjGJfgz1TW0u5h",
+      order,
+    });
+
+  } catch (error) {
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+});
+
+router.post("/verify-payment", async (req, res) => {
+  try {
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+    } = req.body;
+
+    if (
+      !razorpay_order_id ||
+      !razorpay_payment_id ||
+      !razorpay_signature
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment details missing",
+      });
+    }
+
+    const generatedSignature = crypto
+      .createHmac("sha256", "M1zECoibwUS7PgLYzhr30oIp")
+      .update(
+        razorpay_order_id + "|" + razorpay_payment_id
+      )
+      .digest("hex");
+
+    if (generatedSignature !== razorpay_signature) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment Verification Failed",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Payment Verified Successfully",
+      paymentId: razorpay_payment_id,
+      orderId: razorpay_order_id,
+    });
+
+  } catch (error) {
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
-    console.log("DONATION BODY:", req.body);
+  
 
-    const {
-      name,
-      phone,
-      email,
-      amount,
-      message,
-      paymentMode,
-      transactionId,
-    } = req.body;
+const {
+  name,
+  phone,
+  email,
+  amount,
+  message,
+ 
+  razorpay_order_id,
+  razorpay_payment_id,
+  razorpay_signature,
+} = req.body;
 
     if (!name || !phone || !amount) {
       return res.status(400).json({
@@ -27,17 +121,27 @@ router.post("/", async (req, res) => {
       });
     }
 
-    const donation = await Donation.create({
-      name,
-      phone,
-      email,
-      amount: Number(amount),
-      message,
-      paymentMode: paymentMode || "UPI",
-      transactionId: transactionId || `UPI${Date.now()}`,
-      paymentStatus: "pending",
-      paymentVerified: false,
-    });
+ const donation = await Donation.create({
+  name,
+  phone,
+  email,
+  amount,
+  message,
+
+  paymentStatus: "verified",
+  paymentVerified: true,
+  paymentMode: "UPI",
+
+  razorpayOrderId: razorpay_order_id,
+  razorpayPaymentId: razorpay_payment_id,
+  razorpaySignature: razorpay_signature,
+
+  transactionId: razorpay_payment_id,
+
+  receiptId: "DON" + Date.now(),
+
+  verifiedAt: new Date(),
+});
 
     res.status(201).json({
       success: true,
@@ -45,7 +149,7 @@ router.post("/", async (req, res) => {
       data: donation,
     });
   } catch (error) {
-    console.log("DONATION ERROR:", error.message);
+    
 
     res.status(500).json({
       success: false,
