@@ -8,6 +8,8 @@ const router = express.Router();
 
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
+
+
 const razorpay = new Razorpay({
   key_id: "rzp_live_SjGJfgz1TW0u5h",
   key_secret: "M1zECoibwUS7PgLYzhr30oIp",
@@ -101,6 +103,7 @@ router.post("/verify-payment", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
   
+    console.log(req.body)
 
 const {
   name,
@@ -163,14 +166,15 @@ if (generatedSignature !== razorpay_signature) {
       data: donation,
     });
   } catch (error) {
-    
+  console.error("DONATION ERROR:", error);
+  console.error(error.stack);
 
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-      error: error.message,
-    });
-  }
+  return res.status(500).json({
+    success: false,
+    message: error.message,
+    error: error,
+  });
+}
 });
 
 /* 
