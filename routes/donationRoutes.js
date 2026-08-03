@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.post("/", async (req, res) => {
   try {
-    console.log("DONATION BODY:", req.body);
+    
 
     const {
       name,

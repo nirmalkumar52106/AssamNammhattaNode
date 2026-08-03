@@ -5,9 +5,52 @@ const RegistrationModel = require("../models/registration");
 const router = express.Router();
 
 
+const Razorpay = require("razorpay");
+const crypto = require("crypto");
+
+const razorpay = new Razorpay({
+  key_id: "rzp_live_SjGJfgz1TW0u5h",     
+  key_secret: "M1zECoibwUS7PgLYzhr30oIp",  
+});
+
+router.post("/create-order", async (req, res) => {
+  try {
+
+    const { amount } = req.body;
+
+    if (!amount) {
+      return res.status(400).json({
+        success: false,
+        message: "Amount is required"
+      });
+    }
+
+    const options = {
+      amount: 1 * 100, // Paisa
+      currency: "INR",
+      receipt: "receipt_" + Date.now(),
+    };
+
+    const order = await razorpay.orders.create(options);
+
+    return res.status(200).json({
+      success: true,
+      order,
+      key: "rzp_live_SjGJfgz1TW0u5h"
+    });
+
+  } catch (err) {
+
+    return res.status(500).json({
+      success: false,
+      message: err.message
+    });
+
+  }
+});
+
 router.post("/register", async (req, res) => {
   try {
-   console.log("BODY:", req.body);
     const {
       fullName,
       spiritualName,
@@ -15,7 +58,9 @@ router.post("/register", async (req, res) => {
       phone,
       age,
       gender,
+      village,
       city,
+      pincode,
       state,
       country,
       center,
@@ -25,20 +70,14 @@ router.post("/register", async (req, res) => {
       departureDate,
       sevaInterest,
       accommodation,
-      notes
+      notes,
     } = req.body;
 
     // Required Validation
-
-    if (
-      !fullName ||
-      !email ||
-      !phone ||
-      !city
-    ) {
+    if (!fullName || !email || !phone || !city) {
       return res.status(400).json({
         success: false,
-        message: "Please fill all required fields."
+        message: "Please fill all required fields.",
       });
     }
 
@@ -49,7 +88,9 @@ router.post("/register", async (req, res) => {
       phone,
       age,
       gender,
+      village,
       city,
+      pincode,
       state,
       country,
       center,
@@ -59,25 +100,69 @@ router.post("/register", async (req, res) => {
       departureDate,
       sevaInterest,
       accommodation,
-      notes
+      notes,
     });
 
     return res.status(201).json({
       success: true,
       message: "Registration Successful",
-      data: registration
+      data: registration,
     });
-
   } catch (error) {
-
     return res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
-
   }
 });
 
+
+
+
+router.post("/verify-payment", async (req, res) => {
+
+  try {
+
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+    } = req.body;
+
+    const body =
+      razorpay_order_id + "|" + razorpay_payment_id;
+
+    const expectedSignature = crypto
+      .createHmac("sha256", "M1zECoibwUS7PgLYzhr30oIp") 
+      .update(body.toString())
+      .digest("hex");
+
+    if (expectedSignature === razorpay_signature) {
+
+      return res.json({
+        success: true,
+        message: "Payment Verified Successfully"
+      });
+
+    } else {
+
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Signature"
+      });
+
+    }
+
+  } catch (err) {
+
+    return res.status(500).json({
+      success: false,
+      message: err.message
+    });
+
+  }
+
+});
 // GET - All Registrations Protected
 router.get("/", verifyAdmin, async (req, res) => {
   try {

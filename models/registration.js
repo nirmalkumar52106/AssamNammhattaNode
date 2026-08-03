@@ -24,9 +24,15 @@ const devoteeRegistrationSchema = new mongoose.Schema(
       type: String,
       enum: ["Male", "Female", ""],
     },
+    village: {
+      type: String,
+    },
     city: {
       type: String,
       required: true,
+    },
+    pincode: {
+      type: String,
     },
     state: {
       type: String,
@@ -65,9 +71,35 @@ const devoteeRegistrationSchema = new mongoose.Schema(
     notes: {
       type: String,
     },
+    paymentAmount: {
+  type: Number,
+  default: 1,
+},
+
+paymentStatus: {
+  type: String,
+  enum: ["Pending", "Success", "Failed"],
+  default: "Pending",
+},
+
+razorpayOrderId: {
+  type: String,
+},
+
+razorpayPaymentId: {
+  type: String,
+},
+
+razorpaySignature: {
+  type: String,
+},
   },
   { timestamps: true }
 );
 
-const RegistrationModel = mongoose.model("registration" , devoteeRegistrationSchema)
-module.exports = RegistrationModel
+const RegistrationModel = mongoose.model(
+  "registration",
+  devoteeRegistrationSchema
+);
+
+module.exports = RegistrationModel;
