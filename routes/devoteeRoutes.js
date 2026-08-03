@@ -15,16 +15,6 @@ const razorpay = new Razorpay({
 
 router.post("/create-order", async (req, res) => {
   try {
-
-    const { amount } = req.body;
-
-    if (!amount) {
-      return res.status(400).json({
-        success: false,
-        message: "Amount is required"
-      });
-    }
-
     const options = {
       amount: 1 * 100, // Paisa
       currency: "INR",
