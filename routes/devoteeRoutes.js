@@ -16,7 +16,7 @@ const razorpay = new Razorpay({
 router.post("/create-order", async (req, res) => {
   try {
     const options = {
-      amount: 1 * 100, // Paisa
+      amount: 1 * 100, 
       currency: "INR",
       receipt: "receipt_" + Date.now(),
     };
@@ -61,6 +61,11 @@ router.post("/register", async (req, res) => {
       sevaInterest,
       accommodation,
       notes,
+       paymentAmount,
+
+  razorpay_order_id,
+  razorpay_payment_id,
+  razorpay_signature,
     } = req.body;
 
     // Required Validation
@@ -91,6 +96,17 @@ router.post("/register", async (req, res) => {
       sevaInterest,
       accommodation,
       notes,
+        paymentAmount: paymentAmount,
+
+  paymentStatus: "Success",
+
+  razorpayOrderId: razorpay_order_id,
+
+  razorpayPaymentId: razorpay_payment_id,
+
+  razorpaySignature: razorpay_signature,
+
+
     });
 
     return res.status(201).json({
