@@ -23,7 +23,7 @@ mongoose.connection.on("disconnected", () => {
 });
 
 mongoose.connection.on("reconnected", () => {
-  console.log("✅ MongoDB Reconnected");
+  console.log("✅ MongoDB Reconnecteddddd");
 });
 
 module.exports = mongoose;
