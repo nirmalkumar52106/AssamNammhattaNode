@@ -27,7 +27,7 @@ router.post("/create-order", async (req, res) => {
 }
 
     const options = {
-      amount: amount * 100, 
+      amount: Number(amount) * 100, 
       currency: "INR",
       receipt: "receipt_" + Date.now(),
     };
@@ -56,32 +56,32 @@ router.post("/create-order", async (req, res) => {
 
 router.post("/register", async (req, res) => {
   try {
-    const {
-      fullName,
-      spiritualName,
-      email,
-      phone,
-      age,
-      gender,
-      village,
-      city,
-      pincode,
-      state,
-      country,
-      center,
-      attendees,
-      foodPreference,
-      arrivalDate,
-      departureDate,
-      sevaInterest,
-      accommodation,
-      notes,
-       paymentAmount,
-
+   const {
+  fullName,
+  spiritualName,
+  email,
+  phone,
+  age,
+  gender,
+  village,
+  city,
+  pincode,
+  state,
+  country,
+  center,
+  attendees,
+  familyMembers,
+  foodPreference,
+  arrivalDate,
+  departureDate,
+  sevaInterest,
+  accommodation,
+  notes,
+  paymentAmount,
   razorpay_order_id,
   razorpay_payment_id,
   razorpay_signature,
-    } = req.body;
+} = req.body;
 
     // Required Validation
     if (!fullName || !email || !phone || !city) {
@@ -105,6 +105,7 @@ router.post("/register", async (req, res) => {
       country,
       center,
       attendees,
+      familyMembers,
       foodPreference,
       arrivalDate,
       departureDate,

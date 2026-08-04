@@ -76,6 +76,35 @@ const devoteeRegistrationSchema = new mongoose.Schema(
   default: 1,
 },
 
+familyMembers: [
+  {
+    name: {
+      type: String,
+      default: "",
+    },
+
+    age: {
+      type: Number,
+      default: 0,
+    },
+
+    gender: {
+      type: String,
+      default: "",
+    },
+
+    phone: {
+      type: String,
+      default: "",
+    },
+
+    address: {
+      type: String,
+      default: "",
+    },
+  },
+],
+
 paymentStatus: {
   type: String,
   enum: ["Pending", "Success", "Failed"],
