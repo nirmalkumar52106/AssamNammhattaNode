@@ -73,7 +73,6 @@ const devoteeRegistrationSchema = new mongoose.Schema(
     },
     paymentAmount: {
   type: Number,
-  default: 1,
 },
 
 familyMembers: [
