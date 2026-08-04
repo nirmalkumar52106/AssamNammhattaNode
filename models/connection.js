@@ -8,12 +8,8 @@ mongoose.set("strictQuery", true);
 mongoose
   .connect(dburl, {
     family: 4,
-      serverSelectionTimeoutMS: 300000, // 5 Minutes
-
-  socketTimeoutMS: 300000,
-
-  connectTimeoutMS: 300000,
-
+      serverSelectionTimeoutMS: 300000, 
+      socketTimeoutMS: 300000,
   })
   .then(() => {
     console.log("✅ MongoDB Connected");
