@@ -103,13 +103,12 @@ router.post("/verify-payment", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
   
-    console.log(req.body)
 
 const {
   name,
   phone,
   email,
-  amount,
+  amount, 
   message,
  
   razorpay_order_id,
